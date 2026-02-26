@@ -1,5 +1,9 @@
 package ast
 
+type Block interface {
+	isBlock()
+}
+
 type Resource struct {
 	Provider     string
 	ResourceName string
@@ -7,5 +11,7 @@ type Resource struct {
 }
 
 type Manifest struct {
-	Blocks []Resource
+	Blocks []Block
 }
+
+func (r *Resource) isBlock() {}
