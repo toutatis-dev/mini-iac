@@ -14,10 +14,10 @@ type ResourceProvider interface {
 }
 
 type ResourceState struct {
-	Provider     string
-	ResourceName string
-	Properties   map[string]string
-	Timestamp    time.Time
+	Provider     string            `json:"provider"`
+	ResourceName string            `json:"resource_name"`
+	Properties   map[string]string `json:"properties"`
+	Timestamp    time.Time         `json:"timestamp"`
 }
 
 func ResourceID(resource *ast.Resource) string {
