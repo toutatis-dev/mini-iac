@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"mini-iac/token"
+	"mini-iac/internal/token"
 )
 
 type Lexer struct {

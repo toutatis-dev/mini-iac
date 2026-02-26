@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"mini-iac/lexer"
+	"mini-iac/internal/lexer"
 )
 
 func main() {
