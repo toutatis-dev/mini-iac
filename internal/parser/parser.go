@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"mini-iac/internal/ast"
 	"mini-iac/internal/lexer"
 	"mini-iac/internal/token"
 )
@@ -25,4 +26,26 @@ func New(l *lexer.Lexer) *Parser {
 	p.nextToken()
 
 	return p
+}
+
+func (p *Parser) ParseManifest() ast.Manifest {
+	manifest := ast.Manifest{
+		Blocks: []ast.Block{},
+	}
+	for {
+		if p.curToken.Type == token.EOF {
+			break
+		}
+
+		if p.curToken.Type == token.KEYWORD {
+			switch p.curToken.Literal {
+			case "resource":
+				res := p.parseResource()
+				manifest.Blocks = append(manifest.Blocks, res)
+			}
+		}
+		p.nextToken()
+	}
+
+	return manifest
 }
