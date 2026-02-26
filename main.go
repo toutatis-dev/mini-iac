@@ -3,16 +3,19 @@ package main
 import (
 	"fmt"
 	"mini-iac/internal/lexer"
+	"mini-iac/internal/parser"
 )
 
 func main() {
 	input := "resource \"file\" \"main.go\" { content = \"package main\"; }"
 	lex := lexer.New(input)
-	for i := 0; i <= len(input); i++ {
-		token := lex.NextToken()
-		fmt.Printf("token: %v\n", token)
-		if token.Type == "EOF" {
-			break
-		}
+	p := parser.New(lex)
+
+	manifest := p.ParseManifest()
+
+	fmt.Printf("Parsed %d resources:\n", len(manifest.Blocks))
+	for i, block := range manifest.Blocks {
+		// Since Blocks are the 'Block' interface, we cast to *ast.Resource to print
+		fmt.Printf("[%d] %+v\n", i, block)
 	}
 }
