@@ -7,7 +7,15 @@ import (
 )
 
 func main() {
-	input := "resource \"file\" \"main.go\" { content = \"package main\"; }"
+	input := `
+	resource "file" "main.go" {
+		content = "package main";
+	}
+
+	resource "file" "readme.md" {
+		content = "# My Project";
+	}
+	`
 	lex := lexer.New(input)
 	p := parser.New(lex)
 
