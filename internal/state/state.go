@@ -3,6 +3,7 @@ package state
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"mini-iac/internal/provider"
 	"os"
@@ -58,8 +59,14 @@ func (s *State) SaveState() error {
 
 }
 
-func (s *State) GetSingleState(id string) (provider.ResourceState, error) {
+func (s *State) GetSingleState(id string) (*provider.ResourceState, error) {
+	//take an id, search through map for value, if found return the resourceState, other wise return error.
+	state, ok := s.State[id]
+	if !ok {
+		return nil, fmt.Errorf("Error, id %s does not exist in state", id)
+	}
 
+	return &state, nil
 }
 
 func (s *State) GetAllStates() ([]provider.ResourceState, error) {
