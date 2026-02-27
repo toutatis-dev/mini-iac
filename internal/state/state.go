@@ -71,4 +71,11 @@ func (s *State) GetSingleState(id string) (*provider.ResourceState, error) {
 
 func (s *State) GetAllStates() ([]provider.ResourceState, error) {
 
+	states := []provider.ResourceState{}
+
+	for _, state := range s.State {
+		states = append(states, state)
+	}
+
+	return states, nil
 }
