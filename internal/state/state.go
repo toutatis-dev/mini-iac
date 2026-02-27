@@ -15,7 +15,7 @@ type State struct {
 
 func (s *State) LoadState() error {
 	fi, err := os.Open("./state.json")
-	defer fi.Close()
+
 	if os.IsNotExist(err) {
 		_, err = os.Create("./state.json")
 		if err != nil {
@@ -27,6 +27,7 @@ func (s *State) LoadState() error {
 	} else if err != nil {
 		return errors.New("Could not open state.json Fatal error")
 	}
+	defer fi.Close()
 	content, err := io.ReadAll(fi)
 	if err != nil {
 		return errors.New("Could not read state.json Fatal error")
