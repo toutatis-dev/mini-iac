@@ -39,6 +39,22 @@ func (s *State) LoadState() error {
 }
 
 func (s *State) SaveState() error {
+	//marshal provider.ResourceState into json, key with id, and write to state,json
+	fi, err := os.Create("./state.json")
+	if err != nil {
+		return errors.New("Fatal error, could not open state.json")
+	}
+	defer fi.Close()
+	js, err := json.MarshalIndent(s.State, "", "    ")
+	if err != nil {
+		return errors.New("Fatal error, could not marshal s.State")
+	}
+
+	_, err = fi.WriteString(string(js))
+	if err != nil {
+		return errors.New("Fatal error, could not write to state.json")
+	}
+	return nil
 
 }
 
