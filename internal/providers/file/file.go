@@ -63,8 +63,28 @@ func (f *FileProvider) Create(desired *ast.Resource) (*provider.ResourceState, e
 
 }
 
-func (f *FileProvider) Update(id string, desired *ast.Resource) (*provider.ResourceState, error) {
+func (f *FileProvider) Update(desired *ast.Resource) (*provider.ResourceState, error) {
+	fileName := desired.ResourceName
+	fi, err := os.Create(fileName)
+	if err != nil {
+		return nil, errors.New("Could not open file")
+	}
+	defer fi.Close()
 
+	fileContent := desired.Properties["content"]
+	_, err = fi.WriteString(fileContent)
+	if err != nil {
+		return nil, errors.New("Could not write to file")
+	}
+
+	state := provider.ResourceState{
+		Provider:     desired.Provider,
+		ResourceName: desired.ResourceName,
+		Properties:   desired.Properties,
+		Timestamp:    time.Now(),
+	}
+
+	return &state, nil
 }
 
 func (f *FileProvider) Delete(resourceName string) error {
