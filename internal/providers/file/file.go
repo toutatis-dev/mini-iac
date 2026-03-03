@@ -17,8 +17,24 @@ import (
 type FileProvider struct {
 }
 
-func (f *FileProvider) Read(id string) (*provider.ResourceState, error) {
+func (f *FileProvider) Read(desired *ast.Resource) (*provider.ResourceState, error) {
+	fileName := desired.ResourceName
 
+	bContent, err := os.ReadFile(fileName)
+	if err != nil {
+		return nil, errors.New("Could not read file")
+	}
+	content := string(bContent)
+	properties := make(map[string]string)
+	properties["content"] = content
+
+	state := provider.ResourceState{
+		Provider:     desired.Provider,
+		ResourceName: fileName,
+		Properties:   properties,
+		Timestamp:    time.Now(),
+	}
+	return &state, nil
 }
 
 func (f *FileProvider) Create(desired *ast.Resource) (*provider.ResourceState, error) {
@@ -51,6 +67,13 @@ func (f *FileProvider) Update(id string, desired *ast.Resource) (*provider.Resou
 
 }
 
-func (f *FileProvider) Delete(id string) error {
+func (f *FileProvider) Delete(resourceName string) error {
+
+	err := os.Remove(resourceName)
+	if err != nil {
+		return errors.New("Could not delete file")
+	}
+
+	return nil
 
 }
