@@ -19,7 +19,8 @@ const (
 
 type PlanItem struct {
 	Action   Action
-	Resource ast.Resource
+	Resource *ast.Resource
+	ID       string
 }
 
 type Plan struct {
@@ -43,7 +44,8 @@ func Planner(state *state.State, resource *ast.Manifest, prov provider.ResourceP
 			//add create to plan
 			planItem := PlanItem{
 				Action:   CREATE,
-				Resource: *res,
+				Resource: res,
+				ID:       blockID,
 			}
 			plan.Items = append(plan.Items, planItem)
 
@@ -58,17 +60,46 @@ func Planner(state *state.State, resource *ast.Manifest, prov provider.ResourceP
 				//noop
 				planItem := PlanItem{
 					Action:   NOOP,
-					Resource: *res,
+					Resource: res,
+					ID:       blockID,
 				}
 				plan.Items = append(plan.Items, planItem)
 			} else {
 				//update
 				planItem := PlanItem{
 					Action:   UPDATE,
-					Resource: *res,
+					Resource: res,
+					ID:       blockID,
 				}
 				plan.Items = append(plan.Items, planItem)
 			}
 		}
 	}
+
+	for id := range state.State {
+		found := false
+		for _, block := range resource.Blocks {
+			blockres, ok := block.(*ast.Resource)
+			if !ok {
+				return Plan{}, errors.New("Could not cast block to ast.Resource")
+			}
+			blockresID := provider.ResourceID(blockres)
+
+			if id == blockresID {
+				found = true
+				break
+			}
+
+		}
+		if !found {
+			planItem := PlanItem{
+				Action:   DELETE,
+				Resource: nil,
+				ID:       id,
+			}
+			plan.Items = append(plan.Items, planItem)
+		}
+	}
+	return plan, nil
+
 }
