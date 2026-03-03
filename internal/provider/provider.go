@@ -7,10 +7,10 @@ import (
 )
 
 type ResourceProvider interface {
-	Read(id string) (*ResourceState, error)
+	Read(desired *ast.Resource) (*ResourceState, error)
 	Create(desired *ast.Resource) (*ResourceState, error)
-	Update(id string, desired *ast.Resource) (*ResourceState, error)
-	Delete(id string) error
+	Update(desired *ast.Resource) (*ResourceState, error)
+	Delete(resourceName string) error
 }
 
 type ResourceState struct {
