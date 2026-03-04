@@ -13,6 +13,12 @@ type State struct {
 	State map[string]provider.ResourceState
 }
 
+func NewState() State {
+	return State{
+		State: make(map[string]provider.ResourceState),
+	}
+}
+
 func (s *State) LoadState() error {
 	fi, err := os.Open("./state.json")
 
