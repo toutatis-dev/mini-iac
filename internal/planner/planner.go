@@ -52,7 +52,13 @@ func Planner(state *state.State, resource *ast.Manifest, prov provider.ResourceP
 		} else {
 			currentState, err := prov.Read(res)
 			if err != nil {
-				return Plan{}, errors.New(err.Error())
+				planItem := PlanItem{
+					Action:   CREATE,
+					Resource: res,
+					ID:       blockID,
+				}
+				plan.Items = append(plan.Items, planItem)
+				continue
 			}
 
 			equal := reflect.DeepEqual(currentState.Properties, resourceState.Properties)
