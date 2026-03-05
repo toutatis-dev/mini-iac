@@ -21,7 +21,9 @@ func Execute(plan planner.Plan, prov provider.ResourceProvider, s *state.State) 
 			id := provider.ResourceID(plans.Resource)
 			s.State[id] = *newState
 		case planner.DELETE:
-			err := prov.Delete(plans.ID)
+			resourceState := s.State[plans.ID]
+
+			err := prov.Delete(resourceState.ResourceName)
 			if err != nil {
 				return errors.New(err.Error())
 			}
