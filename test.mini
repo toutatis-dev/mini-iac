@@ -1,3 +1,0 @@
-resource "file" "readme.md" {
-		content = "# My Project";
-	}
