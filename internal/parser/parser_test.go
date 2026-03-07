@@ -25,6 +25,15 @@ func TestParseManifest(t *testing.T) {
 			},
 		}},
 		{"Invalid Resource", "resource file \"test1.md\" {content = \"# My Project\";}", ast.Manifest{Blocks: []ast.Block{}}},
+		{"Missing RBRACE", "resource \"file\" \"test1.md\" {content = \"# My Project\";", ast.Manifest{Blocks: []ast.Block{}}},
+		{"No Properties", "resource \"file\" \"test1.md\" {}", ast.Manifest{Blocks: []ast.Block{
+			&ast.Resource{
+				Provider:     "file",
+				ResourceName: "test1.md",
+				Properties:   map[string]string{},
+			},
+		}}},
+		{"No Resource", "resource  \"test1.md\" {content = \"# My Project\";}", ast.Manifest{Blocks: []ast.Block{}}},
 	}
 
 	for _, tt := range tests {
